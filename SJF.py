@@ -1,9 +1,13 @@
-from threading import Thread, Lock
+from threading import Thread, Lock #Import necessary objects from modules
 from time import sleep
 from tabulate import tabulate
 
+
 class CWThreads (Thread): #Creating class CWThreads to contain thread burst time and threat number
     def __init__ (self, burstTime: int, tNo: int):
+        '''
+            Initialise CWThreads Object with burst time and thread number as parameter
+        '''
         Thread.__init__(self)
         self.burstTime: int = burstTime
         self.tNo: int = tNo
@@ -11,7 +15,7 @@ class CWThreads (Thread): #Creating class CWThreads to contain thread burst time
         self.taT: int = 0 #Turnaround Time
     
     
-    def run(self) -> None: #Overwriting existing Thread().run() function
+    def run(self) -> None: #Overwriting existing Thread.run() function
         '''
             Using Lock().acquire() and .release() to allow for synchronisation between threads
         '''
@@ -30,10 +34,9 @@ def ExecThread(thread: CWThreads) -> None:
     print(f"Thread {thread.tNo} ended (BurstTime: {thread.burstTime})")      
 
 
-def SortThreads(lst: list[CWThreads]) -> None: #https://www.geeksforgeeks.org/dsa/bubble-sort-algorithm/
+def SortThreads(lst: list[CWThreads]) -> None: 
     '''
         Uses bubble sort algorithm to sort the threads in ascending order of burst time
-        Note: Using code from GeeksForGeeks as base and implementing for specific use
         Returns: None
     '''
     lenLst: int = len(lst) 
@@ -58,13 +61,14 @@ def CreateThreads() -> list[CWThreads]:
     tNo: int = 1 #Thread Number
     while True:
         userCh: str = input("1) Add a new thread\n2) Exit Loop\n")
-        if userCh == "2":
+        if userCh != "1": #Loop terminates when user gives input
             break
         
         burstTime: int = int(input("Enter burst time(secs): "))
         threads.append(CWThreads(burstTime, tNo))
         
         tNo += 1
+        
     return threads
 
 
@@ -73,8 +77,6 @@ def RunAndJoinThreads() -> None:
         Runs all threads in for loop using .start() and then joins in another for loop using .join()
     '''
     for thread in threads:        
-        global processCounter
-        processCounter += 1
         thread.start()
 
     for thread in threads:
@@ -90,17 +92,20 @@ def GetWaitingAndTaT():
         taT += thread.burstTime #Get wait and turnaround time
         thread.taT, thread.waitTime = taT, waitTime
         
-        totalWaitTime += waitTime
-        totalTaT += taT
+        totalWaitTime += waitTime #Increment to totalWaitTime
+        totalTaT += taT #Increment to total Turnaround Time
         
         waitTime += thread.burstTime
     
     global avgWaitTime
-    global avgTaT       #Float values
-    avgWaitTime, avgTaT = totalWaitTime / processCounter, totalTaT / processCounter #Get average of wait and turnaround time
+    global avgTaT #Float values
+    avgWaitTime, avgTaT = totalWaitTime / len(threads), totalTaT / len(threads) #Get average of wait and turnaround time
     
 
 def DisplayThreads() -> None:
+    '''
+        Creates a 2d matrix of form list[list] containing all details of every thread and prints a table using tabulate.tabulate()
+    '''
     tDetailsMatrix: list[list] = []
     for thread in threads:
         tDetailsMatrix.append([thread.tNo, thread.burstTime, thread.waitTime, thread.taT])
@@ -110,11 +115,9 @@ def DisplayThreads() -> None:
 
 
 if __name__ == "__main__":  #In __main__
-    processCounter: int = 0 #Global variables
     tLock: Lock = Lock()
-    threads: list[CWThreads] = CreateThreads()
-     
-    SortThreads(threads)
+    threads: list[CWThreads] = CreateThreads() #Create all variables and store in global variable threads
+    SortThreads(threads) #Sort all threads by burstTime for SJF
     RunAndJoinThreads()
     GetWaitingAndTaT()
-    DisplayThreads()
+    DisplayThreads() #Display final output after all calculations and simulations

@@ -115,9 +115,9 @@ def DisplayThreads() -> None:
 
 
 if __name__ == "__main__":  #In __main__
-    tLock: Lock = Lock()
+    tLock: Lock = Lock() #Create lock for synchronisation of threads
     threads: list[CWThreads] = CreateThreads() #Create all variables and store in global variable threads
-    SortThreads(threads) #Sort all threads by burstTime for SJF
+    SortThreads(threads)
     RunAndJoinThreads()
     GetWaitingAndTaT()
     DisplayThreads() #Display final output after all calculations and simulations

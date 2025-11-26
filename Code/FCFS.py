@@ -25,7 +25,6 @@ class CWThreads (Thread): #Creating class CWThreads to contain thread burst time
         tLock.release()
 
 
-#CODE BY SYED MOHAMMED JAFER HUSSAIN M01087633
 def ExecThread(thread: CWThreads) -> None:
     '''
         Prints thread started/ended and simulates thread running using time.sleep()
@@ -34,25 +33,6 @@ def ExecThread(thread: CWThreads) -> None:
     print(f"Thread {thread.tNo} started (BurstTime: {thread.burstTime})")
     sleep(thread.burstTime)   
     print(f"Thread {thread.tNo} ended (BurstTime: {thread.burstTime})")      
-
-
-def SortThreads(lst: list[CWThreads]) -> None: 
-    '''
-        Uses bubble sort algorithm to sort the threads in ascending order of burst time
-        Returns: None
-    '''
-    lenLst: int = len(lst) 
-    
-    for i in range(lenLst):
-        swapped: bool = False
-        for j in range(0, lenLst - i - 1):
-            if lst[j].burstTime > lst[j + 1].burstTime:
-                lst[j], lst[j+1] = lst[j+1], lst[j] #Swap if not in correct order
-                swapped = True
-
-        if (not swapped):
-            break
-#CODE BY SYED MOHAMMED JAFER HUSSAIN M01087633
 
 
 def CreateThreads() -> list[CWThreads]: 
@@ -75,7 +55,6 @@ def CreateThreads() -> list[CWThreads]:
     return threads
 
 
-#CODE BY SYED MOHAMMED JAFER HUSSAIN M01087633
 def RunAndJoinThreads() -> None:
     '''
         Runs all threads in for loop using .start() and then joins in another for loop using .join()
@@ -104,8 +83,7 @@ def GetWaitingAndTaT():
     global avgWaitTime
     global avgTaT #Float values
     avgWaitTime, avgTaT = totalWaitTime / len(threads), totalTaT / len(threads) #Get average of wait and turnaround time
-#CODE BY SYED MOHAMMED JAFER HUSSAIN M01087633  
-
+    
 
 def DisplayThreads() -> None:
     '''
@@ -122,9 +100,6 @@ def DisplayThreads() -> None:
 if __name__ == "__main__":  #In __main__
     tLock: Lock = Lock() #Create lock for synchronisation of threads
     threads: list[CWThreads] = CreateThreads() #Create all variables and store in global variable threads
-    SortThreads(threads)
     RunAndJoinThreads()
     GetWaitingAndTaT()
     DisplayThreads() #Display final output after all calculations and simulations
-
-#CODE BY SYED MOHAMMED JAFER HUSSAIN M01087633

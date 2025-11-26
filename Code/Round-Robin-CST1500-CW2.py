@@ -1,4 +1,6 @@
-#CODE BY SAIFANA MARYAM M01088086
+#CODE BY SAIFANA KURADIELA MARYAM M01088086
+
+from tabulate import tabulate   # for table formatting, install "pip install tabulate"
 # Round Robin Algorithm Function
 def round_robin_scheduling(processes, arrival_times, burst_times, quantum):
     # Variables to be used
@@ -11,7 +13,7 @@ def round_robin_scheduling(processes, arrival_times, burst_times, quantum):
     visited = [False] * n   # Checks if process is in queue
     complete = [False] * n   # Checks if process is executed fully
     queue = []   # Empty queue list
-    time = 0    # Starting time of algorithim
+    time = 0    # Starting time of algorithim | Program counter
     
     while True:
         # Adds new processes
@@ -49,10 +51,20 @@ def round_robin_scheduling(processes, arrival_times, burst_times, quantum):
         if all(complete):   # All programs have been executed
             break
             
-    # Printing formatted results in table
-    print("Process\tArrival\tBurst\tWaiting\tTrnarnd\tCompletion")
+    # Tabulating data
+    table_data = []
     for i in range(n):
-        print(f"{processes[i]}\t{arrival_times[i]}\t{burst_times[i]}\t{waiting_time[i]}\t{turnaround_time[i]}\t{completion_time[i]}")
+        table_data.append([
+            processes[i],
+            arrival_times[i],
+            burst_times[i],
+            waiting_time[i],
+            turnaround_time[i],
+            completion_time[i]
+        ])
+
+    headers = ["Process", "Arrival", "Burst", "Waiting", "Turnaround", "Completion"]
+    print("\n" + tabulate(table_data, headers=headers, tablefmt="grid"))
 
     avg_wait = sum(waiting_time) / n
     avg_turn = sum(turnaround_time) / n

@@ -1,105 +1,47 @@
-#CODE BY SYED MOHAMMED JAFER HUSSAIN M01087633
-from threading import Thread, Lock #Import necessary objects from modules
-from time import sleep
-from tabulate import tabulate
+def calculate_fcfs(processes):
+    # Number of processes
+    n = len(processes)
+
+    # Initialize waiting time and turn-around time lists
+    waiting_time = [0] * n
+    turn_around_time = [0] * n
+
+    # Calculate waiting time
+    for i in range(1, n):
+        waiting_time[i] = processes[i - 1][1] + waiting_time[i - 1]
+
+    # Calculate turn-around time
+    for i in range(n):
+        turn_around_time[i] = processes[i][1] + waiting_time[i]
+
+    # Averages
+    avg_waiting_time = sum(waiting_time) / n
+    avg_turnaround_time = sum(turn_around_time) / n
+
+    return waiting_time, turn_around_time, avg_waiting_time, avg_turnaround_time
 
 
-class CWThreads (Thread): #Creating class CWThreads to contain thread burst time and threat number
-    def __init__ (self, burstTime: int, tNo: int):
-        '''
-            Initialise CWThreads Object with burst time and thread number as parameter
-        '''
-        Thread.__init__(self)
-        self.burstTime: int = burstTime
-        self.tNo: int = tNo
-        self.waitTime: int = 0
-        self.taT: int = 0 #Turnaround Time
-    
-    
-    def run(self) -> None: #Overwriting existing Thread.run() function
-        '''
-            Using Lock().acquire() and .release() to allow for synchronisation between threads
-        '''
-        tLock.acquire() 
-        ExecThread(self)
-        tLock.release()
+# ---------------------------
+# Main program
+# ---------------------------
+n = int(input("Enter the number of processes: "))
+processes = []
 
+# Input burst times
+for i in range(n):
+    burst_time = int(input(f"Enter burst time for process {i+1}: "))
+    processes.append((i + 1, burst_time))
 
-def ExecThread(thread: CWThreads) -> None:
-    '''
-        Prints thread started/ended and simulates thread running using time.sleep()
-        Returns: None
-    '''
-    print(f"Thread {thread.tNo} started (BurstTime: {thread.burstTime})")
-    sleep(thread.burstTime)   
-    print(f"Thread {thread.tNo} ended (BurstTime: {thread.burstTime})")      
+# Calculate FCFS results
+waiting_time, turn_around_time, avg_wait, avg_tat = calculate_fcfs(processes)
 
+# Output results
+print("\nProcess | Burst Time | Waiting Time | Turn Around Time")
+print("--------------------------------------------------------")
 
-def CreateThreads() -> list[CWThreads]: 
-    '''
-        Using user input to get burst times and create threads
-        Returns: List containing all threads created
-    '''
-    threads: list[CWThreads] = []
-    tNo: int = 1 #Thread Number
-    while True:
-        userCh: str = input("1) Add a new thread\n2) Exit Loop\n")
-        if userCh != "1": #Loop terminates when user gives input
-            break
-        
-        burstTime: int = int(input("Enter burst time(secs): "))
-        threads.append(CWThreads(burstTime, tNo))
-        
-        tNo += 1
-        
-    return threads
+for i in range(n):
+    print(f"{processes[i][0]:<7} | {processes[i][1]:<10} | {waiting_time[i]:<12} | {turn_around_time[i]:<16}")
 
-
-def RunAndJoinThreads() -> None:
-    '''
-        Runs all threads in for loop using .start() and then joins in another for loop using .join()
-    '''
-    for thread in threads:        
-        thread.start()
-
-    for thread in threads:
-        thread.join()
-
-
-def GetWaitingAndTaT():
-    '''
-        Iterates through threads: list[CWThreads] and calculates waiting and turnaround time for each thread
-    '''
-    waitTime = taT = totalWaitTime = totalTaT = 0 #Int values
-    for thread in threads:
-        taT += thread.burstTime #Get wait and turnaround time
-        thread.taT, thread.waitTime = taT, waitTime
-        
-        totalWaitTime += waitTime #Increment to totalWaitTime
-        totalTaT += taT #Increment to total Turnaround Time
-        
-        waitTime += thread.burstTime
-    
-    global avgWaitTime
-    global avgTaT #Float values
-    avgWaitTime, avgTaT = totalWaitTime / len(threads), totalTaT / len(threads) #Get average of wait and turnaround time
-    
-
-def DisplayThreads() -> None:
-    '''
-        Creates a 2d matrix of form list[list] containing all details of every thread and prints a table using tabulate.tabulate()
-    '''
-    tDetailsMatrix: list[list] = []
-    for thread in threads:
-        tDetailsMatrix.append([thread.tNo, thread.burstTime, thread.waitTime, thread.taT])
-
-    print( tabulate( tDetailsMatrix, headers = ["Process Number", "Burst Time", "Waiting Time", "Turnaround Time"], tablefmt = "psql") )
-    print( tabulate( [[avgWaitTime, avgTaT]], headers = ["Average Wait Time", "Average Turnaround Time"], tablefmt = "psql") )
-
-
-if __name__ == "__main__":  #In __main__
-    tLock: Lock = Lock() #Create lock for synchronisation of threads
-    threads: list[CWThreads] = CreateThreads() #Create all variables and store in global variable threads
-    RunAndJoinThreads()
-    GetWaitingAndTaT()
-    DisplayThreads() #Display final output after all calculations and simulations
+# Print averages
+print(f"\nAverage Waiting Time: {avg_wait:.2f}")
+print(f"Average Turn Around Time: {avg_tat:.2f}")

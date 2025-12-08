@@ -1,10 +1,11 @@
 #CODE BY SAIFANA KURADIELA MARYAM M01088086
 
-from tabulate import tabulate   # for table formatting, install "pip install tabulate"
+from tabulate import tabulate   # for table formatting, must be installed
 # Round Robin Algorithm Function
 def round_robin_scheduling(processes, arrival_times, burst_times, quantum):
     # Variables to be used
     n = len(processes)
+    # List slicing and indexing
     remaining_bt = burst_times[:]
     waiting_time = [0] * n
     turnaround_time = [0] * n
@@ -13,7 +14,9 @@ def round_robin_scheduling(processes, arrival_times, burst_times, quantum):
     visited = [False] * n   # Checks if process is in queue
     complete = [False] * n   # Checks if process is executed fully
     queue = []   # Empty queue list
-    time = 0    # Starting time of algorithim | Program counter
+    time = 0    # Starting time of algorithim
+    # List to display Gantt-Chart process order
+    execution_order = []
     
     while True:
         # Adds new processes
@@ -27,6 +30,8 @@ def round_robin_scheduling(processes, arrival_times, burst_times, quantum):
             continue
         # Removes first index of queue and stores in current
         current = queue.pop(0)
+        # Adds the current process that is running to Gantt Chart
+        execution_order.append(processes[current])
         # Time quantum calculations and conditions
         if remaining_bt[current] > quantum:
             time += quantum
@@ -62,7 +67,6 @@ def round_robin_scheduling(processes, arrival_times, burst_times, quantum):
             turnaround_time[i],
             completion_time[i]
         ])
-
     headers = ["Process", "Arrival", "Burst", "Waiting", "Turnaround", "Completion"]
     print("\n" + tabulate(table_data, headers=headers, tablefmt="grid"))
 
@@ -70,7 +74,11 @@ def round_robin_scheduling(processes, arrival_times, burst_times, quantum):
     avg_turn = sum(turnaround_time) / n
     print(f"\nAverage Waiting Time: {avg_wait:.2f}")
     print(f"Average Turnaround Time: {avg_turn:.2f}")
+    # Printing the Execution Order
+    print("\nExecution Order:")
+    print(" -> ".join(execution_order))
 
+# Variable lists for RR function
 listprocess = []
 listburst = []
 listarrival = []
@@ -87,3 +95,4 @@ for i in range(process):
     
 # Calling RR function
 round_robin_scheduling(listprocess, listarrival, listburst, quantum)
+

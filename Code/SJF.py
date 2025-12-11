@@ -112,12 +112,15 @@ def DisplayThreads() -> None:
         Creates a 2d matrix of form list[list] containing all details of every thread and prints a table using tabulate.tabulate()
     '''
     tDetailsMatrix: list[list] = []
+    processOrder: str = ""
     for thread in threads:
         tDetailsMatrix.append([thread.tNo, thread.burstTime, thread.waitTime, thread.taT])
+        processOrder += f"Thread {thread.tNo} -> "
 
     print( tabulate( tDetailsMatrix, headers = ["Process Number", "Burst Time", "Waiting Time", "Turnaround Time"], tablefmt = "psql") )
     print( tabulate( [[avgWaitTime, avgTaT]], headers = ["Average Wait Time", "Average Turnaround Time"], tablefmt = "psql") )
-
+    print(processOrder[: -3])
+    
 
 if __name__ == "__main__":  #In __main__
     tLock: Lock = Lock() #Create lock for synchronisation of threads
